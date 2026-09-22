@@ -358,7 +358,7 @@ var ROBOT_NOTE="「このロボット」とは、あなたが現在お持ちの�
   "<b>最もよく関わっている1体</b>を思い浮かべてお答えください。";
 
 /* ---------- 状態 ---------- */
-var S={answers:{},order:{},screenTime:{},blockTime:{},
+var S={answers:{},order:{},screenTime:{},blockTime:{},itemLog:{},
        meta:{startedAt:null,consentAt:null,finishedAt:null,device:null,ua:null,screenW:null}};
 /* enteredAt は必ず現在時刻で初期化する。0 のまま recordTime が走ると
    「1970年からの経過時間」が所要時間として記録されてしまう */
@@ -783,8 +783,13 @@ function bindChrome(){
 function bindDelegated(){
   document.getElementById("app").addEventListener("click",function(e){
     var b=e.target.closest("button"); if(!b) return;
-    if(b.dataset.code){ S.answers[b.dataset.code]=+b.dataset.val; markGroup(b); clearMissing(b); updateRemain(); saveDraft(); }
+    if(b.dataset.code){
+      var c=b.dataset.code, v=+b.dataset.val;
+      noteAnswer(c, S.answers[c], v);
+      S.answers[c]=v; markGroup(b); clearMissing(b); updateRemain(); saveDraft();
+    }
     if(b.dataset.opt){
+      noteAnswer(b.dataset.opt, S.answers[b.dataset.opt], b.dataset.val);
       S.answers[b.dataset.opt]=b.dataset.val; markGroup(b); clearMissing(b); updateRemain(); saveDraft();
       if(b.dataset.opt==="SQ3"){
         var other=(b.dataset.val==="その他"), box=document.getElementById("SQ3other");
@@ -797,9 +802,11 @@ function bindDelegated(){
   /* select とテキストの変更は即時に保存する。自動保存と未回答マークを正しく働かせるため */
   document.getElementById("app").addEventListener("change",function(e){
     var t=e.target;
-    if(t.id==="SQ2")  S.answers.SQ2       = t.value===""?null:+t.value;
-    if(t.id==="SQ6y") S.answers.SQ6_year  = t.value===""?null:+t.value;
-    if(t.id==="SQ6m") S.answers.SQ6_month = t.value===""?null:+t.value;
+    if(t.id==="SQ2"){ var a=t.value===""?null:+t.value; noteAnswer("SQ2",S.answers.SQ2,a); S.answers.SQ2=a; }
+    if(t.id==="SQ6y"||t.id==="SQ6m"){
+      var k=(t.id==="SQ6y")?"SQ6_year":"SQ6_month", v2=t.value===""?null:+t.value;
+      noteAnswer("SQ6", S.answers[k], v2); S.answers[k]=v2;
+    }
     if(t.id==="SQ3free") S.answers.SQ3_free=t.value;
     if(t.classList&&t.classList.contains("sel")) t.classList.toggle("blank",t.value==="");
     if(t.id&&t.id.indexOf("SQ")===0){ clearMissing(t); updateRemain(); saveDraft(); }
@@ -838,6 +845,18 @@ function clearMissing(b){
   var host=b.closest(".qitem")||b.closest(".fitem");
   if(host) host.classList.remove("missing");
 }
+/* 項目ごとの回答ログ。どの設問で手が止まったかを後から見るために使う。
+   t   ＝ その画面に入ってから最初に答えるまでのミリ秒
+   last＝ 最後に答えを確定したときのミリ秒（答え直した場合は最後の時刻）
+   chg ＝ 答えを変えた回数（迷いの指標。時間より素直に出ることが多い）
+   まとめ表示では、2問目以降の t は「前の設問を答えた時刻からの差」で読む。
+   厳密な1問あたりの所要時間が必要なら MAX_PER_SCREEN=1 にして測ること。 */
+function noteAnswer(code, prev, next){
+  if(prev===next) return;
+  var t=Date.now()-enteredAt, e=S.itemLog[code];
+  if(!e){ S.itemLog[code]={t:t,last:t,chg:0}; }
+  else { e.chg++; e.last=t; }
+}
 function markGroup(b){
   /* .opts（縦積み）と .scale7（横一列）の両方に対応する */
   var g=b.parentElement.querySelectorAll("button");
@@ -850,7 +869,9 @@ function flat(){
   Object.keys(S.meta).forEach(function(k){o["meta_"+k]=S.meta[k];});
   Object.keys(S.answers).forEach(function(k){o[k]=S.answers[k];});
   Object.keys(S.blockTime).forEach(function(k){o["time_"+k+"_ms"]=S.blockTime[k];});
-  o.order=JSON.stringify(S.order); return o;
+  o.order=JSON.stringify(S.order);
+  o.itemLog=JSON.stringify(S.itemLog);   // 項目別の所要時間・修正回数
+  return o;
 }
 function dl(name,text,type){
   var u=URL.createObjectURL(new Blob([text],{type:type}));
