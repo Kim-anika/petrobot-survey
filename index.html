@@ -128,9 +128,17 @@ h3{font-size:15px;color:var(--ink);font-weight:600;margin:28px 0 6px;letter-spac
 @media (hover:hover) and (pointer:fine){.scale7 button:hover{background:var(--tint)}}
 .scale7 button[aria-checked="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
 .scale7 button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.anchors{display:flex;justify-content:space-between;gap:12px;margin-top:9px;
-  font-size:12px;line-height:1.5;color:var(--muted)}
+/* 両端＋中央の3点。中央は7個のボタンの中心＝「4」の真下に来る。
+   狭い画面では中央ラベルを次の行へ送り、文字が潰れないようにする。 */
+.anchors{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;margin-top:9px;
+  font-size:11.5px;line-height:1.5;color:var(--muted)}
 .anchors span{min-width:0;overflow-wrap:anywhere}
+.anchors span:last-child{text-align:right}
+.anchors .mid{text-align:center}
+@media (max-width:379px){
+  .anchors{grid-template-columns:1fr 1fr;row-gap:4px}
+  .anchors .mid{order:3;grid-column:1 / -1;text-align:center}
+}
 .q + .scale7,.desc + .scale7{margin-top:16px}
 
 /* まとめ表示：Tally は項目間に罫線を引かず、余白だけで区切る */
@@ -312,7 +320,12 @@ var ADV_MS=260;
 
 var LAB_P2=["全くあてはまらない","あてはまらない","あまりあてはまらない","どちらともいえない",
             "ややあてはまる","あてはまる","非常によくあてはまる"];
-var LAB_P3=["全く当てはまらない","","","","","","非常によく当てはまる"];
+/* 第3部：両端＋中央。原論文は両端にラベルを置き、中央の4には下線を引いて
+   「真ん中」であることを示している（中尾・加藤 2004b, 付録TableA 注記a「下線は真ん中です」）。
+   本実装では下線ではなく「どちらともいえない」の文字を中央に置く（2026-09-28、指導教員の指示）。
+   原論文に文字ラベルは無いという点で、この1か所だけが追加になる。
+   第2部から第3部に移ったときラベルが急に消えて戸惑う、という指摘への対応。 */
+var LAB_P3=["全く当てはまらない","","","どちらともいえない","","","非常によく当てはまる"];
 var ALPHA="ABCDEFGH";
 
 var A=[["A1","このロボットとは、自分のペースで関わることができる。"],
@@ -422,6 +435,7 @@ function scaleHTML(code,part){
     }
     return '<div class="scale7" role="radiogroup" aria-label="'+code+'">'+h+"</div>"+
            '<div class="anchors"><span>'+esc(LAB_P3[0])+"</span>"+
+           '<span class="mid">'+esc(LAB_P3[3])+"</span>"+
            "<span>"+esc(LAB_P3[6])+"</span></div>";
   }
   /* 第2部：全ラベルなので縦積み（横並びでは和文が潰れる。§9.2 原則5） */
