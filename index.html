@@ -352,7 +352,9 @@ var LAB_P2=["全くあてはまらない","あてはまらない","あまりあ�
    原論文に文字ラベルは無いという点で、この1か所だけが追加になる。
    第2部から第3部に移ったときラベルが急に消えて戸惑う、という指摘への対応。 */
 var LAB_P3=["全く当てはまらない","","","どちらともいえない","","","非常によく当てはまる"];
-var ALPHA="ABCDEFGH";
+/* 選択肢のキーバッジ。選択肢数を増やしたときに足りなくなるため全英字を持つ
+   （旧 "ABCDEFGH" は8個までしかなく、9個目以降が undefined と表示されていた） */
+var ALPHA="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 /* A1〜A3 は「できる」（可能性）で終えると、ロボットの所有者なら誰でも当てはまるため
    全員が7を選びやすい（R-01 の天井効果）。実際にそうしているかを問う「している」に変えた
@@ -439,8 +441,8 @@ var FACE=[
      分析では raw の機種をそのまま統制変数に入れない（11水準＝10自由度で n=100 では不可能）。
      動物型・自律移動／動物型・非移動／非動物型の3群に束ねて投入する（hypotheses.md §7 参照） */
   {code:"SQ3",q:"お持ちのペット型ロボットの種類",desc:ROBOT_NOTE,
-   opts:["Moflin（モフリン）","LOVOT（ラボット）","aibo（アイボ）","Qoobo（クーボ）","NICOBO（ニコボ）",
-         "KATAフレンズ（カタフレンズ）","lopeto（ロペット）","Loona（ルーナ）","Romi（ロミィ）","PARO（パロ）","その他"]},
+   opts:["Moflin（モフリン）","LOVOT（ラボット）","aibo（アイボ）","Romi（ロミィ）","Qoobo（クーボ）",
+         "NICOBO（ニコボ）","KATAフレンズ（カタフレンズ）","lopeto（ロペット）","Loona（ルーナ）","その他"]},
   {code:"SQ5",q:"このロボットと触れ合う頻度",desc:"",opts:["ほぼ毎日","週に数回","週に1回程度","月に数回","それ以下"]},
   {code:"SQ6",q:"このロボットを迎えた時期",desc:"おおよそで構いません。例：2024年11月",input:"date"}
 ];
@@ -487,7 +489,8 @@ function choiceHTML(name,list){
   return '<div class="opts" role="radiogroup">'+list.map(function(o,i){
     return '<button type="button" class="opt" role="radio" aria-checked="'+(S.answers[name]===o)+'" '+
       'data-opt="'+name+'" data-val="'+esc(o)+'">'+
-      '<span class="key">'+ALPHA[i]+'</span><span class="lab">'+esc(o)+"</span></button>";
+      (ALPHA[i]?'<span class="key">'+ALPHA[i]+"</span>":"")+
+      '<span class="lab">'+esc(o)+"</span></button>";
   }).join("")+"</div>";
 }
 /* 「のこり◯問」＝まだ答えていないリッカート項目の数（全25問）。
