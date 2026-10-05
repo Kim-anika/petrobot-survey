@@ -7,12 +7,12 @@
 <!-- SNS で共有されたときにカードを表示させる。カードが出ない裸のURLは
      「怪しいリンク」と判断されてクリックされないため、回答率に直結する。
      ★公開URLを変更したら og:url・og:image・twitter:image を必ず更新すること -->
-<meta name="description" content="明治大学大学院 情報コミュニケーション研究科の修士論文のための学術調査です。ペット型ロボット（Moflin・LOVOT・aibo など）をお持ちの18歳以上の方に、全25問・匿名でお伺いします。">
+<meta name="description" content="明治大学大学院 情報コミュニケーション研究科の修士論文のための学術調査です。ペット型ロボット（Moflin・LOVOT・aibo・Qoobo・NICOBO など）をお持ちの18歳以上の方に、全25問・匿名でお伺いします。">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ja_JP">
 <meta property="og:site_name" content="明治大学大学院 情報コミュニケーション研究科">
 <meta property="og:title" content="ペット型ロボットとの関わり方に関する調査">
-<meta property="og:description" content="修士論文のための学術調査です。ペット型ロボットをお持ちの18歳以上の方に、全25問・匿名でお伺いします。">
+<meta property="og:description" content="修士論文のための学術調査です。ペット型ロボット（Moflin・LOVOT・aibo・Qoobo・NICOBO など）をお持ちの18歳以上の方に、全25問・匿名でお伺いします。">
 <meta property="og:url" content="https://petrobot-survey.github.io/">
 <meta property="og:image" content="https://petrobot-survey.github.io/card.png">
 <meta property="og:image:width" content="1200">
@@ -20,7 +20,7 @@
 <meta property="og:image:alt" content="ペット型ロボットとの関わり方に関する調査（明治大学大学院 情報コミュニケーション研究科）">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="ペット型ロボットとの関わり方に関する調査">
-<meta name="twitter:description" content="修士論文のための学術調査です。ペット型ロボットをお持ちの18歳以上の方に、全25問・匿名でお伺いします。">
+<meta name="twitter:description" content="修士論文のための学術調査です。ペット型ロボット（Moflin・LOVOT・aibo・Qoobo・NICOBO など）をお持ちの18歳以上の方に、全25問・匿名でお伺いします。">
 <meta name="twitter:image" content="https://petrobot-survey.github.io/card.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232563eb'/%3E%3Crect x='17' y='15' width='30' height='37' rx='5' fill='%23ffffff'/%3E%3Crect x='25' y='10' width='14' height='9' rx='3.5' fill='%23dbeafe'/%3E%3Cpath d='M24 31h16M24 40h11' stroke='%232563eb' stroke-width='3.5' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -403,7 +403,7 @@ var P3_VERBATIM=
 var P3_WEB="それぞれの文について、もっとも当てはまる番号を1つお選びください。";
 
 var ROBOT_NOTE="「このロボット」とは、あなたが現在お持ちのペット型ロボット"+
-  "（Moflin・LOVOT・aibo など）を指します。複数お持ちの場合は、"+
+  "（Moflin・LOVOT・aibo・Qoobo・NICOBO など）を指します。複数お持ちの場合は、"+
   "<b>最もよく関わっている1体</b>を思い浮かべてお答えください。";
 
 /* ---------- 状態 ---------- */
@@ -435,7 +435,11 @@ var FACE=[
   /* 属性（性別・年齢・動物のペット経験）を先にまとめ、そのあとロボットの話に入る
      （2026-09-29、研究者判断）。コードは内容に固定しているため採点・集計は変わらない。 */
   {code:"SQ4",q:"これまでに動物のペットを飼った経験",desc:"",opts:["今も飼っている","過去に飼っていた","飼ったことはない"]},
-  {code:"SQ3",q:"お持ちのペット型ロボットの種類",desc:ROBOT_NOTE,opts:["Moflin","LOVOT","aibo","その他"]},
+  /* 機種は多めに挙げる。選択肢に自分の機種が無いと「対象外だ」と判断して離脱しうるため。
+     分析では raw の機種をそのまま統制変数に入れない（11水準＝10自由度で n=100 では不可能）。
+     動物型・自律移動／動物型・非移動／非動物型の3群に束ねて投入する（hypotheses.md §7 参照） */
+  {code:"SQ3",q:"お持ちのペット型ロボットの種類",desc:ROBOT_NOTE,
+   opts:["Moflin","LOVOT","aibo","Qoobo / Petit Qoobo","NICOBO","Romi","BOCCO emo","PARO","Pleo","Eilik","その他"]},
   {code:"SQ5",q:"このロボットと触れ合う頻度",desc:"",opts:["ほぼ毎日","週に数回","週に1回程度","月に数回","それ以下"]},
   {code:"SQ6",q:"このロボットを迎えた時期",desc:"おおよそで構いません。例：2024年11月",input:"date"}
 ];
@@ -528,7 +532,7 @@ function viewConsent(){
   "<b>途中でやめられます。</b>参加は任意で、中止による不利益はありません。<br>"+
   "<b>自動保存されます。</b>中断しても同じ端末から再開できます。"+
   "</div>"+
-  '<p class="body-text">対象は、ペット型ロボット（Moflin、LOVOT、aibo など）を'+
+  '<p class="body-text">対象は、ペット型ロボット（Moflin、LOVOT、aibo、Qoobo、NICOBO など）を'+
   "お持ちの"+MIN_AGE+"歳以上の方です。</p>"+
   '<p class="body-text">普段の対人関係についての質問など、答えにくいと感じられる項目が'+
   "含まれます。答えたくない場合は、いつでも回答を中止できます。</p>"+
