@@ -98,6 +98,7 @@ h2{font-size:clamp(22px,5.6vw,27px);font-weight:700;line-height:1.4;
 .desc{font-size:14px;color:var(--muted);line-height:1.7;margin:0 0 4px}
 .q + .opts,.desc + .opts{margin-top:14px}
 .lede{font-size:16px;color:var(--muted);line-height:1.75;margin:0 0 28px}
+.relink{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
 /* 所属の明示。折りたたみの中にあると、開く前に離脱した人には
    「誰がやっている調査か」が伝わらない。最初の画面で必ず見える位置に置く */
 .org{display:inline-block;font-size:13.5px;color:var(--muted);line-height:1.5;
@@ -966,7 +967,11 @@ function bindDone(){
     document.getElementById("bottombar").hidden=true;
     document.getElementById("app").innerHTML='<div class="step">'+
       "<h2>この端末からは回答済みです</h2>"+
-      '<p class="lede">ご協力いただき、ありがとうございました。</p></div>';
+      '<p class="lede">ご協力いただき、ありがとうございました。</p>'+
+      /* 同じ端末を家族で共有している場合、2人目が回答できずに離脱してしまう。
+         本人の不用意な二重送信は引き続き防ぎつつ、別の回答者には道を残す。 */
+      '<p class="body-text"><a class="relink" href="?reset=1">別の方が回答される場合はこちら</a></p>'+
+      "</div>";
     return;
   }
   if(d&&d.idx>0&&d.idx<SCREENS.length-1){
