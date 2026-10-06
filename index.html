@@ -336,8 +336,9 @@ pre{background:var(--tint);border:1px solid var(--line);padding:13px;border-radi
    空文字のときは送信せず、完了画面でローカル書き出しができる予備調査モードになる。
    設定手順は backend/SETUP_バックエンド.md を参照。 */
 var ENDPOINT="https://script.google.com/macros/s/AKfycbwcQhXMCZtc0EKbMQfISX_lNmXQYjw_djDQLMsedmf7x4XvUfTv3JylmwqQx09LpobwPQ/exec";
-var FORM_VERSION="2026-10-02";  // 質問票の版。回答データに記録され、どの版で答えたかを後から区別できる
-                                // 更新履歴：2026-09-19 初版 → 2026-10-02（A1〜A4・C3 の文言変更、ADDENDUM 修正12・13）
+var FORM_VERSION="2026-10-05";  // 質問票の版。回答データに記録され、どの版で答えたかを後から区別できる
+                                // 更新履歴：2026-09-19 初版 → 2026-10-02（A1〜A4・C3 の文言変更、修正12・13）
+                                //           → 2026-10-05（SQ3 の機種選択肢を入れ替え・読みがな併記）
                                 // ★項目文を変更したら必ずこの値を更新すること
 var MAX_PER_SCREEN=4;          // §9.4 案C。1 にすると一問一画面（案B）
 var AUTO_ADVANCE_CHOICE=false; // フェイスシートの自動前進。まとめ表示では使わない
