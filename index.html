@@ -784,7 +784,8 @@ function postWithRetry(payload,tries){
         headers:{"Content-Type":"text/plain;charset=utf-8"},
         body:JSON.stringify(payload),signal:ctl?ctl.signal:undefined})
       .then(function(r){ clearTimeout(timer); return r.json(); })
-      .then(function(j){ if(j&&j.ok) resolve(j); else throw new Error((j&&j.error)||"ng"); })
+      /* id まで一致したときだけ成功とみなす。デプロイ直後などに POST が doGet の応答（ok:true だが id なし）にすり替わることがあり、ok だけ見ると保存されていないのに完了画面が出る */
+      .then(function(j){ if(j&&j.ok&&j.id===payload.meta_respId) resolve(j); else throw new Error((j&&j.error)||"ng"); })
       .catch(function(){ clearTimeout(timer); if(n<tries) setTimeout(go,1500); else reject(); });
     })();
   });
