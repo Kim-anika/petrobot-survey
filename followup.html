@@ -294,11 +294,9 @@ function send(){
   post(payload,3).then(function(){
     try{ localStorage.setItem(DONE_KEY,"1"); }catch(e){}
     viewThanks();
-  },function(code){
+  },function(){
     btn.disabled=false; btn.textContent="もう一度送信する";
-    err.textContent = code==="unknown_id"
-      ? "このリンクの回答IDが見つかりませんでした。お手数ですが、リンクを送った者にお知らせください。"
-      : "送信できませんでした。通信状況をご確認のうえ、もう一度お試しください。";
+    err.textContent="送信できませんでした。通信状況をご確認のうえ、もう一度お試しください。";
   });
 }
 function post(payload,tries){
@@ -313,11 +311,7 @@ function post(payload,tries){
         headers:{"Content-Type":"text/plain;charset=utf-8"},
         body:JSON.stringify(payload),signal:ctl?ctl.signal:undefined})
       .then(function(r){ clearTimeout(timer); return r.json(); })
-      .then(function(j){
-        if(j&&j.ok) return resolve(j);
-        if(j&&j.error==="unknown_id") return reject("unknown_id");   // 再送しても通らない
-        throw new Error((j&&j.error)||"ng");
-      })
+      .then(function(j){ if(j&&j.ok) resolve(j); else throw new Error((j&&j.error)||"ng"); })
       .catch(function(){ clearTimeout(timer); if(n<tries) setTimeout(go,1500); else reject("net"); });
     })();
   });
