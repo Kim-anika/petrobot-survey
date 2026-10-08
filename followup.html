@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<title>追加のご質問（4問）</title>
+<title>追加のご質問（7問）</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
@@ -225,18 +225,24 @@ pre{background:var(--tint);border:1px solid var(--line);padding:13px;border-radi
 </head>
 <body>
 <!-- 修正14（2026-10-08）でロボット愛着の4項目を差し替えた。差し替え前に回答した人にだけ、
-     新しい4項目を追加で尋ねるページ。?id=回答ID で開く。本回答と同じ文面・同じ7段階・同じ並び
-     （C11・C8・C9・C10）で提示し、結果はスプレッドシートの followup シートに保存される。 -->
+     新版のロボット愛着7項目をまとめて尋ねるページ。?id=回答ID で開く。
+     新しい4項目だけでなく、変更していない C3・C4・C6 も含めて本回答と同じ文面・7段階・並びで提示する。
+     7項目を同じ場面で答えてもらうことで、新版の愛着得点を1回の回答から計算できる
+     （前回の C3・C4・C6 との一致は、再回答の安定性の確認に使える）。
+     バックエンドは C8〜C11 を列に、C3・C4・C6 を含む全体を raw_json 列に保存する。 -->
 <div class="wrap"><div id="app"></div></div>
 <script>
 var ENDPOINT="https://script.google.com/macros/s/AKfycbwcQhXMCZtc0EKbMQfISX_lNmXQYjw_djDQLMsedmf7x4XvUfTv3JylmwqQx09LpobwPQ/exec";
-var FORM_VERSION="2026-10-08-followup";
+var FORM_VERSION="2026-10-09-followup";
 var LAB_P2=["全くあてはまらない","あてはまらない","あまりあてはまらない","どちらともいえない",
             "ややあてはまる","あてはまる","非常によくあてはまる"];
-var ITEMS=[["C11","離れているときにも、このロボットのことをよく考える。"],
-           ["C8","まったく同じ新品と交換できるとしても、今のこの個体のままがよい。"],
-           ["C9","どんな条件を示されても、このロボットを手放すことは考えられない。"],
-           ["C10","疲れているときでも、このロボットの世話はしたい。"]];
+var ITEMS=[["C3","私は、このロボットのそばにいると安心する。"],
+       ["C6","私は、このロボットに愛着を感じている。"],
+       ["C4","しばらくこのロボットと関われないと、寂しく感じる。"],
+       ["C11","離れているときにも、このロボットのことをよく考える。"],
+       ["C8","まったく同じ新品と交換できるとしても、今のこの個体のままがよい。"],
+       ["C9","どんな条件を示されても、このロボットを手放すことは考えられない。"],
+       ["C10","疲れているときでも、このロボットの世話はしたい。"]];
 var ID=(new URLSearchParams(location.search).get("id")||"").toUpperCase();
 var DONE_KEY="petrobot_followup_done_"+ID;
 var ans={},log={},t0=Date.now(),startedAt=new Date().toISOString();
@@ -246,9 +252,10 @@ function esc(s){return String(s).replace(/[&<>"']/g,function(c){
 function app(h){document.getElementById("app").innerHTML='<div class="step">'+h+"</div>";}
 
 function viewForm(){
-  app("<h2>追加のご質問（4問）</h2>"+
+  app("<h2>追加のご質問（7問）</h2>"+
     '<p class="lede">先日は調査にご協力いただき、ありがとうございました。'+
-    "質問の一部を改訂したため、新しく加えた4問にだけ、追加でご回答をお願いいたします。1分ほどで終わります。</p>"+
+    "質問の一部を改訂したため、ロボットについての7問に、あらためてご回答をお願いいたします。"+
+    "前回と同じ質問も含まれていますが、そのときのお気持ちでお答えください。1〜2分で終わります。</p>"+
     '<div class="callout">前回と同じロボット（<b>最もよく関わっている1体</b>）を思い浮かべて、'+
     "それぞれの文があなたの気持ちにどの程度あてはまるかを、7段階からお選びください。</div>"+
     ITEMS.map(function(it){
