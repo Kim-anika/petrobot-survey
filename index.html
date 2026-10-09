@@ -336,11 +336,13 @@ pre{background:var(--tint);border:1px solid var(--line);padding:13px;border-radi
    空文字のときは送信せず、完了画面でローカル書き出しができる予備調査モードになる。
    設定手順は backend/SETUP_バックエンド.md を参照。 */
 var ENDPOINT="https://script.google.com/macros/s/AKfycbwcQhXMCZtc0EKbMQfISX_lNmXQYjw_djDQLMsedmf7x4XvUfTv3JylmwqQx09LpobwPQ/exec";
-var FORM_VERSION="2026-10-09";  // 質問票の版。回答データに記録され、どの版で答えたかを後から区別できる
+var FORM_VERSION="2026-10-09b";  // 質問票の版。回答データに記録され、どの版で答えたかを後から区別できる
                                 // 更新履歴：2026-09-19 初版 → 2026-10-02（A1〜A4・C3 の文言変更、修正12・13）
                                 //           → 2026-10-05（SQ3 の機種選択肢を入れ替え・読みがな併記）
                                 //           → 2026-10-08（ロボット愛着 C1・C2・C5・C7 を C8〜C11 に差し替え、修正14／SQ3 に ポケとも を追加）
                                 //           → 2026-10-09（C の提示順を変更。新版の回答 0 件の時点で実施）
+                                //           → 2026-10-09b（SQ3 の表記：LOVOT の読みを公式のひらがな「らぼっと」に、
+                                //              ポケともを他機種と同じ「英字（読み）」の形に。回答 0 件の時点で実施）
                                 // ★項目文を変更したら必ずこの値を更新すること
 var MAX_PER_SCREEN=4;          // §9.4 案C。1 にすると一問一画面（案B）
 var AUTO_ADVANCE_CHOICE=false; // フェイスシートの自動前進。まとめ表示では使わない
@@ -456,7 +458,7 @@ var FACE=[
      分析では raw の機種をそのまま統制変数に入れない（11水準＝10自由度で n=100 では不可能）。
      動物型・自律移動／動物型・非移動／非動物型の3群に束ねて投入する（hypotheses.md §7 参照） */
   {code:"SQ3",q:"お持ちのペット型ロボットの種類",desc:ROBOT_NOTE,
-   opts:["Moflin（モフリン）","LOVOT（ラボット）","aibo（アイボ）","Romi（ロミィ）","ポケとも","Qoobo（クーボ）",
+   opts:["Moflin（モフリン）","LOVOT（らぼっと）","aibo（アイボ）","Romi（ロミィ）","Poketomo（ポケとも）","Qoobo（クーボ）",
          "NICOBO（ニコボ）","KATAフレンズ（カタフレンズ）","lopeto（ロペット）","Loona（ルーナ）","その他"]},
   {code:"SQ5",q:"このロボットと触れ合う頻度",desc:"",opts:["ほぼ毎日","週に数回","週に1回程度","月に数回","それ以下"]},
   {code:"SQ6",q:"このロボットを迎えた時期",desc:"おおよそで構いません。例：2024年11月",input:"date"}
